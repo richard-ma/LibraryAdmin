@@ -1,7 +1,27 @@
 from flask import Flask
 from flask import render_template
+from flask import g
+import sqlite3
+import os
+
+PROJECT_ROOT = "/home/richardma/PycharmProjects/LibraryAdmin"
+DATABASE = os.path.join(PROJECT_ROOT, "data", "libraryadmin.db")
+
 
 app = Flask(__name__)
+
+
+@app.before_request
+def connect_db():
+    db = getattr(g, 'db', None)
+    if db is None:
+        g.db = sqlite3.connect(DATABASE)
+
+
+@app.teardown_request
+def close_db(exception):
+    if hasattr(g, 'db'):
+        g.db.close()
 
 
 @app.route("/")
