@@ -4,7 +4,7 @@ from flask import g
 import sqlite3
 import os
 
-PROJECT_ROOT = "/home/richardma/PycharmProjects/LibraryAdmin"
+PROJECT_ROOT = os.path.dirname(__file__)
 DATABASE = os.path.join(PROJECT_ROOT, "data", "libraryadmin.db")
 
 
