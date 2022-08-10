@@ -23,7 +23,7 @@
   * audience_id [foreign key -> audience:id]
 
 ## Route
-* /index
+* /
 * /book
   * /new
   * /update
@@ -35,7 +35,7 @@
     * author
     * publisher
 * /audience
-  * /regisiter
+  * /register
   * /login
     * id
     * password
