@@ -7,8 +7,13 @@
 <body>
     <div align="center">
         <div>
-            <span><a href="{{ url_for('audience_login') }}">Login</a></span>
+            <span><a href="{{ url_for('index') }}">Home</a></span>
             <span>|</span>
+            {% if login == True %}
+            <span><a href="{{ url_for('audience_logout') }}">Logout</a></span>
+            {% else %}
+            <span><a href="{{ url_for('audience_login') }}">Login</a></span>
+            {% endif %}
         </div>
         {% for line in data %}
         <div>

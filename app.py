@@ -4,11 +4,15 @@ from flask import g
 from flask import request
 from flask import redirect
 from flask import url_for
+from flask import session
+from flask import abort
 import sqlite3
 import os
 
 PROJECT_ROOT = os.path.dirname(__file__)
 DATABASE = os.path.join(PROJECT_ROOT, "data", "libraryadmin.db")
+SECRET_KEY = "development key"
+DEBUG = True
 
 
 def result2dict(res):
@@ -16,7 +20,17 @@ def result2dict(res):
     return [dict(zip(res[0], row)) for row in res[1:]]
 
 
+def test_login(abortFlg=False):
+    if session.get('logged_in'):
+        return True
+    else:
+        if abortFlg:
+            abort(401)
+        return False
+
+
 app = Flask(__name__)
+app.config.from_object(__name__)
 
 
 @app.before_request
@@ -54,9 +68,11 @@ def book_delete():
 
 @app.route("/book/search")
 def book_search():
+    login = test_login()
+    print(login)
     cur = g.db.execute("select * from book")
     rows = cur.fetchall()
-    return render_template("book_search.html", data=result2dict(rows))
+    return render_template("book_search.html", data=result2dict(rows), login=login)
 
 
 @app.route("/store/new")
@@ -92,7 +108,8 @@ def audience_login():
         username = request.form['username']
         cur = g.db.execute("select password from audience where id='%s'" % username)
         password = cur.fetchone()[0]
-        if password == request.form['password']:
+        if password == request.form['password']: # login successful
+            session['logged_in'] = True
             return redirect(url_for('index'))
         else:
             return redirect(url_for("audience_login"))
@@ -102,4 +119,5 @@ def audience_login():
 
 @app.route("/audience/logout")
 def audience_logout():
-    return "audience:logout"
+    session.pop('logged_in', None)
+    return redirect(url_for("audience_login"))
