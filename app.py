@@ -9,6 +9,7 @@ from flask import abort
 from flask import flash
 import sqlite3
 import os
+from hashlib import md5
 
 PROJECT_ROOT = os.path.dirname(__file__)
 DATABASE = os.path.join(PROJECT_ROOT, "data", "libraryadmin.db")
@@ -52,9 +53,28 @@ def index():
     return redirect(url_for("book_search"))
 
 
-@app.route("/book/new")
+@app.route("/book/new", methods=['GET', 'POST'])
 def book_new():
-    return render_template('book_new.html')
+    if request.method == 'GET':
+        return render_template('book_new.html')
+    elif request.method == 'POST':
+        book_id = md5((request.form['name']+request.form['author']+request.form['publisher']+request.form['isbn']).encode('utf-8')) \
+            .hexdigest()
+        flag = None
+        g.db.execute("insert into book (id, name, author, publisher, isbn, image, flag) values (?, ?, ?, ?, ?, ?, ?)",
+                     [
+                         book_id,
+                         request.form['name'],
+                         request.form['author'],
+                         request.form['publisher'],
+                         request.form['isbn'],
+                         request.form['image'],
+                         flag,
+                     ])
+        g.db.commit()
+        return redirect(url_for('book_search'))
+    else:
+        raise Exception("Unkown request method: %s" % request.method)
 
 
 @app.route("/book/update")

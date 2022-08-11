@@ -9,6 +9,8 @@
         <div>
             <span><a href="{{ url_for('index') }}">Home</a></span>
             <span>|</span>
+            <span><a href="{{ url_for('book_new') }}">Add Book</a></span>
+            <span>|</span>
             {% if login == True %}
             <span><a href="{{ url_for('audience_logout') }}">Logout</a></span>
             {% else %}
