@@ -156,7 +156,7 @@ def audience_register():
             return redirect(url_for('audience_register'))
         else:
             g.db.execute("insert into audience (id, password) values (?, ?)",
-                         [ request.form['username'], request.form['password']])
+                         [request.form['username'], request.form['password']])
             g.db.commit()
             return redirect(url_for('audience_login'))
     else:
@@ -172,7 +172,7 @@ def audience_login():
         cur = g.db.execute("select password from audience where id='%s'" % username)
         password = cur.fetchone()[0]
         if password == request.form['password']: # login successful
-            session['logged_in'] = True
+            session['logged_in'] = username
             return redirect(url_for('index'))
         else:
             return redirect(url_for("audience_login"))
