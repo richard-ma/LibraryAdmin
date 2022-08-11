@@ -17,9 +17,12 @@ SECRET_KEY = "development key"
 DEBUG = True
 
 
-def result2dict(res):
-    assert len(res) > 1
-    return [dict(zip(res[0], row)) for row in res[1:]]
+# https://docs.python.org/2/library/sqlite3.html#sqlite3.Connection.row_factory
+def dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
 
 
 def test_login(abortFlg=False):
@@ -40,6 +43,7 @@ def connect_db():
     db = getattr(g, 'db', None)
     if db is None:
         g.db = sqlite3.connect(DATABASE)
+        g.db.row_factory = dict_factory
 
 
 @app.teardown_request
@@ -55,8 +59,9 @@ def index():
 
 @app.route("/book/new", methods=['GET', 'POST'])
 def book_new():
+    mode = "new"
     if request.method == 'GET':
-        return render_template('book_new.html')
+        return render_template('book_update.html', mode=mode)
     elif request.method == 'POST':
         book_id = md5((request.form['name']+request.form['author']+request.form['publisher']+request.form['isbn']).encode('utf-8')) \
             .hexdigest()
@@ -77,9 +82,31 @@ def book_new():
         raise Exception("Unkown request method: %s" % request.method)
 
 
-@app.route("/book/update")
-def book_update():
-    return render_template("book_update.html")
+@app.route("/book/update/<book_id>", methods=['GET', 'POST'])
+def book_update(book_id):
+    mode = "update"
+    if request.method == 'GET':
+        cur = g.db.execute("select * from book where id='%s'" % book_id)
+        row = cur.fetchone()
+        cur.close()
+        return render_template('book_update.html', data=row, mode=mode)
+    elif request.method == 'POST':
+        book_id = request.form['id']
+        flag = request.form['flag']
+        g.db.execute("update book set name=?, author=?, publisher=?, isbn=?, image=?, flag=? where id=?",
+                     [
+                         request.form['name'],
+                         request.form['author'],
+                         request.form['publisher'],
+                         request.form['isbn'],
+                         request.form['image'],
+                         flag,
+                         book_id,
+                     ])
+        g.db.commit()
+        return redirect(url_for('book_search'))
+    else:
+        raise Exception("Unkown request method: %s" % request.method)
 
 
 @app.route("/book/delete/<book_id>")
@@ -94,8 +121,9 @@ def book_search():
     login = test_login()
     print(login)
     cur = g.db.execute("select * from book")
-    rows = cur.fetchall()
-    return render_template("book_search.html", data=result2dict(rows), login=login)
+    rows = cur.fetchall()[1:]
+    cur.close()
+    return render_template("book_search.html", data=rows, login=login)
 
 
 @app.route("/store/new")

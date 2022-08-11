@@ -5,15 +5,76 @@
     <title>Update Book</title>
 </head>
 <body>
-    <form>
-        <input type="text" />
-        <input type="text" />
-        <input type="text" />
-        <input type="text" />
-        <input type="text" />
-        <input type="text" />
-        <input type="text" />
-        <input type="submit" value="Update this" />
+<div align="center">
+    <form method="post" action="
+        {% if mode == 'new' %}
+            {{ url_for('book_new') }}
+        {% elif mode == 'update' %}
+            {{ url_for('book_update', book_id=data['id']) }}
+        {% else %}
+            {{ None }}
+        {% endif %}
+        ">
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" name="name" id="name"
+                {% if mode=='update' %}
+                    value="{{ data['name'] }}"
+                {% endif %}
+            />
+        </div>
+        <div>
+            <label for="author">Author:</label>
+            <input type="text" name="author" id="author"
+                {% if mode=='update' %}
+                    value="{{ data['author'] }}"
+                {% endif %}
+            />
+        </div>
+        <div>
+            <label for="publisher">Publisher:</label>
+            <input type="text" name="publisher" id="publisher"
+                {% if mode=='update' %}
+                    value="{{ data['publisher'] }}"
+                {% endif %}
+            />
+        </div>
+        <div>
+            <label for="isbn">ISBN:</label>
+            <input type="text" name="isbn" id="isbn"
+                {% if mode=='update' %}
+                    value="{{ data['isbn'] }}"
+                {% endif %}
+            />
+        </div>
+        <div>
+            <label for="image">Image:</label>
+            <input type="text" name="image" id="image"
+                {% if mode=='update' %}
+                    value="{{ data['image'] }}"
+                {% endif %}
+            />
+        </div>
+        <input type="hidden" name="flag" id="flag"
+            {% if mode=='update' %}
+                value="{{ data['flag'] }}"
+            {% endif %}
+        />
+        <input type="hidden" name="id" id="id"
+               {% if mode=='update' %}
+               value="{{ data['id'] }}"
+               {% endif %}
+        />
+        <div>
+            <input type="submit"
+                {% if mode=='update' %}
+                    value="Update Book"
+                {% elif mode=='new' %}
+                   value="Add Book"
+                {% endif %}
+            />
+        </div>
     </form>
+</div>
 </body>
 </html>
