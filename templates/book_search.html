@@ -5,6 +5,19 @@
     <title>Title</title>
 </head>
 <body>
-
+    <div align="center">
+        {% for line in data %}
+        <div>
+            <span>{{ line["name"] }}</span>
+            <span>{{ line["author"] }}</span>
+            <span>{{ line["publisher"] }}</span>
+            <span>{{ line["isbn"] }}</span>
+            <span>{{ line["image"] }}</span>
+        </div>
+        <div>
+            <span>--------------------------------------------------------------------</span>
+        </div>
+        {% endfor %}
+    </div>
 </body>
 </html>

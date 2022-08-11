@@ -26,7 +26,10 @@ def close_db(exception):
 
 @app.route("/")
 def index():
-    return "<H1>hello</H1>"
+    cur = g.db.execute("select * from book")
+    rows = cur.fetchall()
+    data = [dict(zip(rows[0], row)) for row in rows[1:]]
+    return render_template("book_search.html", data=data)
 
 
 @app.route("/book/new")
