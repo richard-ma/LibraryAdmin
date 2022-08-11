@@ -82,9 +82,11 @@ def book_update():
     return render_template("book_update.html")
 
 
-@app.route("/book/delete")
-def book_delete():
-    return render_template("book_delete.html")
+@app.route("/book/delete/<book_id>")
+def book_delete(book_id):
+    g.db.execute("delete from book where id='%s'" % book_id)
+    g.db.commit()
+    return redirect(url_for("book_search"))
 
 
 @app.route("/book/search")

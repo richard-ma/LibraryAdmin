@@ -24,6 +24,10 @@
             <span>{{ line["publisher"] }}</span>
             <span>{{ line["isbn"] }}</span>
             <span>{{ line["image"] }}</span>
+            {% if login == True %}
+            <span>|</span>
+            <span><a href="{{ url_for('book_delete', book_id=line['id']) }}">Delete</a></span>
+            {% endif %}
         </div>
         <div>
             <span>--------------------------------------------------------------------</span>
