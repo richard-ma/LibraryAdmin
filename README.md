@@ -57,4 +57,5 @@
 * \>\> .tables [display some talbe name like book, borrow, store] `check tables`
 * \>\> .mode csv `import dev data to database`
 * \>\> .import absolut/path/to/LibraryAdmin/data/dev_data/books.csv book `import some book data`
+* \>\> .import absolut/path/to/LibraryAdmin/data/dev_data/audiences.csv andience`import admin id and password`
 * \>\> .quit
