@@ -5,11 +5,24 @@
     <title>Register</title>
 </head>
 <body>
-    <form>
-        <input type="text" />
-        <input type="text" />
-        <input type="text" />
-        <input type="submit" value="Sign In" />
-    </form>
+    <div align="center">
+        <form method="post" action="{{ url_for('audience_register') }}">
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" name="username" id="username" />
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="text" name="password" id="password" />
+            </div>
+            <div>
+                <label for="repassword">Re-Password:</label>
+                <input type="text" name="repassword" id="repassword" />
+            </div>
+            <div>
+                <input type="submit" value="Sign Out" />
+            </div>
+        </form>
+    </div>
 </body>
 </html>

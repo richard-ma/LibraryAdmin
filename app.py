@@ -6,6 +6,7 @@ from flask import redirect
 from flask import url_for
 from flask import session
 from flask import abort
+from flask import flash
 import sqlite3
 import os
 
@@ -95,9 +96,21 @@ def store_search():
     return render_template("store_search.html")
 
 
-@app.route("/audience/register")
+@app.route("/audience/register", methods=['GET', 'POST'])
 def audience_register():
-    return render_template("audience_register.html")
+    if request.method == 'GET':
+        return render_template("audience_register.html")
+    elif request.method == 'POST':
+        if request.form['password'] != request.form['repassword']:
+            flash("Password and Re-Password are not the same.")
+            return redirect(url_for('audience_register'))
+        else:
+            g.db.execute("insert into audience (id, password) values (?, ?)",
+                         [ request.form['username'], request.form['password']])
+            g.db.commit()
+            return redirect(url_for('audience_login'))
+    else:
+        raise Exception("Unkown request method: %s" % request.method)
 
 
 @app.route("/audience/login", methods=['GET', 'POST'])
