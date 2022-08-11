@@ -1,11 +1,19 @@
 from flask import Flask
 from flask import render_template
 from flask import g
+from flask import request
+from flask import redirect
+from flask import url_for
 import sqlite3
 import os
 
 PROJECT_ROOT = os.path.dirname(__file__)
 DATABASE = os.path.join(PROJECT_ROOT, "data", "libraryadmin.db")
+
+
+def result2dict(res):
+    assert len(res) > 1
+    return [dict(zip(res[0], row)) for row in res[1:]]
 
 
 app = Flask(__name__)
@@ -26,10 +34,7 @@ def close_db(exception):
 
 @app.route("/")
 def index():
-    cur = g.db.execute("select * from book")
-    rows = cur.fetchall()
-    data = [dict(zip(rows[0], row)) for row in rows[1:]]
-    return render_template("book_search.html", data=data)
+    return redirect(url_for("book_search"))
 
 
 @app.route("/book/new")
@@ -49,7 +54,9 @@ def book_delete():
 
 @app.route("/book/search")
 def book_search():
-    return render_template("book_search.html")
+    cur = g.db.execute("select * from book")
+    rows = cur.fetchall()
+    return render_template("book_search.html", data=result2dict(rows))
 
 
 @app.route("/store/new")
@@ -77,9 +84,20 @@ def audience_register():
     return render_template("audience_register.html")
 
 
-@app.route("/audience/login")
+@app.route("/audience/login", methods=['GET', 'POST'])
 def audience_login():
-    return render_template("audience_login.html")
+    if request.method == 'GET':
+        return render_template("audience_login.html")
+    elif request.method == 'POST':
+        username = request.form['username']
+        cur = g.db.execute("select password from audience where id='%s'" % username)
+        password = cur.fetchone()[0]
+        if password == request.form['password']:
+            return redirect(url_for('index'))
+        else:
+            return redirect(url_for("audience_login"))
+    else:
+        raise Exception("Unkown request method: %s" % request.method)
 
 
 @app.route("/audience/logout")

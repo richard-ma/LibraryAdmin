@@ -6,6 +6,10 @@
 </head>
 <body>
     <div align="center">
+        <div>
+            <span><a href="{{ url_for('audience_login') }}">Login</a></span>
+            <span>|</span>
+        </div>
         {% for line in data %}
         <div>
             <span>{{ line["name"] }}</span>

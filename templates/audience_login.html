@@ -5,9 +5,20 @@
     <title>Login</title>
 </head>
 <body>
-    <form>
-        <input type="text" />
-        <input type="submit" value="Login" />
-    </form>
+    <div align="center">
+        <form method="post" action="{{ url_for('audience_login') }}">
+            <div>
+                <label for="username">Username: </label>
+                <input name="username" id="username" type="text" />
+            </div>
+            <div>
+                <label for="password">Password: </label>
+                <input name="password" id="password" type="text" />
+            </div>
+            <div>
+                <input type="submit" value="Login" />
+            </div>
+        </form>
+    </div>
 </body>
 </html>
