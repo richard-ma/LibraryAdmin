@@ -10,6 +10,7 @@ from flask import flash
 import sqlite3
 import os
 from hashlib import md5
+from datetime import datetime
 
 PROJECT_ROOT = os.path.dirname(__file__)
 DATABASE = os.path.join(PROJECT_ROOT, "data", "libraryadmin.db")
@@ -126,24 +127,73 @@ def book_search():
     return render_template("book_search.html", data=rows, login=login)
 
 
-@app.route("/store/new")
-def store_new():
-    return render_template("store_new.html")
+@app.route("/store/new/<book_id>", methods=['GET', 'POST'])
+def store_new(book_id):
+    mode = "new"
+    if request.method == 'GET':
+        cur = g.db.execute("select * from book where id='%s'" % book_id)
+        row = cur.fetchone()
+        cur.close()
+        return render_template("store_update.html", mode=mode, data=row)
+    elif request.method == 'POST':
+        book_id = request.form['book_id']
+        store_id = md5((book_id+str(datetime.utcnow())).encode('utf-8')) \
+            .hexdigest()
+        flag = None
+        g.db.execute("insert into store (id, book_id, status, flag) values (?, ?, ?, ?)",
+                     [
+                         store_id,
+                         book_id,
+                         request.form['status'],
+                         flag,
+                     ])
+        g.db.commit()
+        return redirect(url_for('store_search', book_id=book_id))
+    else:
+        raise Exception("Unkown request method: %s" % request.method)
 
 
-@app.route("/store/update")
-def store_update():
-    return render_template("store_update.html")
+@app.route("/store/update/<book_id>/<store_id>", methods=['GET', 'POST'])
+def store_update(book_id, store_id):
+    mode = "update"
+    if request.method == 'GET':
+        cur = g.db.execute("select * from book inner join store where store.id=? and book.id=store.book_id",
+                           [
+                               store_id,
+                           ])
+        row = cur.fetchone()
+        cur.close()
+        return render_template("store_update.html", data=row, mode=mode, book_id=book_id)
+    elif request.method == 'POST':
+        store_id = request.form['id']
+        flag = request.form['flag']
+        g.db.execute("update store set status=?, flag=? where id=?",
+                     [
+                         request.form['status'],
+                         flag,
+                         store_id,
+                     ])
+        g.db.commit()
+        return redirect(url_for('store_search', book_id=book_id))
+    else:
+        raise Exception("Unkown request method: %s" % request.method)
 
 
-@app.route("/store/delete")
-def store_delete():
-    return render_template("store_delete.html")
+@app.route("/store/delete/<book_id>/<store_id>")
+def store_delete(book_id, store_id):
+    g.db.execute("delete from store where id='%s'" % store_id)
+    g.db.commit()
+    return redirect(url_for("store_search", book_id=book_id))
 
 
-@app.route("/store/search")
-def store_search():
-    return render_template("store_search.html")
+@app.route("/store/search/<book_id>", methods=['GET', 'POST'])
+def store_search(book_id):
+    login = test_login()
+    cur = g.db.execute("select * from book inner join store where book.id='%s' and book.id=store.book_id" % book_id)
+    rows = cur.fetchall()[1:]
+    print(rows)
+    cur.close()
+    return render_template("store_search.html", data=rows, login=login, book_id=book_id)
 
 
 @app.route("/audience/register", methods=['GET', 'POST'])

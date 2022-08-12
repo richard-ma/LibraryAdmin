@@ -14,8 +14,8 @@
   * password
 * store
   * id
-  * bo_id [foreign key -> book:id]
-  * status
+  * book_id [foreign key -> book:id]
+  * status [0: on shelf; 1: be borrowed]
   * flag
 * borrow
   * id

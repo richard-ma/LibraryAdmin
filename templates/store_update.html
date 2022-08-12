@@ -5,11 +5,53 @@
     <title>Update Store</title>
 </head>
 <body>
-    <form>
-        <input type="text" />
-        <input type="text" />
-        <input type="text" />
-        <input type="submit" value="Update" />
-    </form>
+    <div align="center">
+        <div>
+            <span>Book Name: {{ data['name'] }}</span>
+        </div>
+        <div>
+            <span>Author: {{ data['author'] }}</span>
+        </div>
+        <div>
+            <span>Publisher: {{ data['publisher'] }}</span>
+        </div>
+        <div>
+            <span>ISBN: {{ data['isbn'] }}</span>
+        </div>
+
+        <form method="post" action="
+        {% if mode == 'new' %}
+            {{ url_for('store_new', book_id=data['id']) }}
+        {% elif mode == 'update' %}
+            {{ url_for('store_update', book_id=book_id, store_id=data['id']) }}
+        {% else %}
+            {{ None }}
+        {% endif %}
+        ">
+            <div>
+                <label for="status">Status:</label>
+                <select id="status" name="status">
+                    <option value="0" {% if mode=='new' or data['status']=='0' %}selected{% endif %}>On Shelf</option>
+                    <option value="1" {% if data['status']=='1' %}selected{% endif %}>Be borrowed</option>
+                </select>
+            </div>
+            {% if mode=='new' %}
+            <input type="hidden" name="book_id" id="book_id" value="{{ data['id'] }}" />
+            {% endif %}
+            {% if mode=='update' %}
+            <input type="hidden" name="flag" id="flag" value="{{ data['flag'] }}" />
+            <input type="hidden" name="id" id="id" value="{{ data['id'] }}" />
+            {% endif %}
+            <div>
+                <input type="submit"
+                       {% if mode=='update' %}
+                       value="Update Store"
+                       {% elif mode=='new' %}
+                       value="Add Store"
+                       {% endif %}
+                />
+            </div>
+        </form>
+    </div>
 </body>
 </html>

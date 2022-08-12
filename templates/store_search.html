@@ -5,6 +5,27 @@
     <title>Title</title>
 </head>
 <body>
-
+    <div align="center">
+        {% for line in data %}
+        <div>
+            <span>{{ line["id"] }}</span>
+            <span>{% if line["status"]=='0' %}On Shelf{% else %}Be Borrowed{% endif %}</span>
+            <span>{{ line["name"] }}</span>
+            <span>{{ line["author"] }}</span>
+            <span>{{ line["publisher"] }}</span>
+            <span>{{ line["isbn"] }}</span>
+            <span>{{ line["image"] }}</span>
+            {% if login == True %}
+            <span>|</span>
+            <span><a href="{{ url_for('store_update', book_id=book_id, store_id=line['id']) }}">Update</a></span>
+            <span>|</span>
+            <span><a href="{{ url_for('store_delete', book_id=book_id, store_id=line['id']) }}">Delete</a></span>
+            {% endif %}
+        </div>
+        <div>
+            <span>--------------------------------------------------------------------</span>
+        </div>
+        {% endfor %}
+    </div>
 </body>
 </html>
