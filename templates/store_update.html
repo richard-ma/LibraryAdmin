@@ -35,9 +35,7 @@
                     <option value="1" {% if data['status']=='1' %}selected{% endif %}>Be borrowed</option>
                 </select>
             </div>
-            {% if mode=='new' %}
-            <input type="hidden" name="book_id" id="book_id" value="{{ data['id'] }}" />
-            {% endif %}
+            <input type="hidden" name="book_id" id="book_id" value="{{ data['book_id'] }}" />
             {% if mode=='update' %}
             <input type="hidden" name="flag" id="flag" value="{{ data['flag'] }}" />
             <input type="hidden" name="id" id="id" value="{{ data['id'] }}" />

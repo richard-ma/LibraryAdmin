@@ -120,7 +120,6 @@ def book_delete(book_id):
 @app.route("/book/search")
 def book_search():
     login = test_login()
-    print(login)
     cur = g.db.execute("select * from book")
     rows = cur.fetchall()[1:]
     cur.close()
@@ -153,8 +152,8 @@ def store_new(book_id):
         raise Exception("Unkown request method: %s" % request.method)
 
 
-@app.route("/store/update/<book_id>/<store_id>", methods=['GET', 'POST'])
-def store_update(book_id, store_id):
+@app.route("/store/update/<store_id>", methods=['GET', 'POST'])
+def store_update(store_id):
     mode = "update"
     if request.method == 'GET':
         cur = g.db.execute("select * from book inner join store where store.id=? and book.id=store.book_id",
@@ -163,7 +162,7 @@ def store_update(book_id, store_id):
                            ])
         row = cur.fetchone()
         cur.close()
-        return render_template("store_update.html", data=row, mode=mode, book_id=book_id)
+        return render_template("store_update.html", data=row, mode=mode)
     elif request.method == 'POST':
         store_id = request.form['id']
         flag = request.form['flag']
@@ -174,7 +173,7 @@ def store_update(book_id, store_id):
                          store_id,
                      ])
         g.db.commit()
-        return redirect(url_for('store_search', book_id=book_id))
+        return redirect(url_for('store_search', book_id=request.form['book_id']))
     else:
         raise Exception("Unkown request method: %s" % request.method)
 
@@ -191,7 +190,6 @@ def store_search(book_id):
     login = test_login()
     cur = g.db.execute("select * from book inner join store where book.id='%s' and book.id=store.book_id" % book_id)
     rows = cur.fetchall()[1:]
-    print(rows)
     cur.close()
     return render_template("store_search.html", data=rows, login=login, book_id=book_id)
 
@@ -220,8 +218,8 @@ def audience_login():
     elif request.method == 'POST':
         username = request.form['username']
         cur = g.db.execute("select password from audience where id='%s'" % username)
-        password = cur.fetchone()[0]
-        if password == request.form['password']: # login successful
+        password = cur.fetchone()['password']
+        if password == request.form['password']:  # login successful
             session['logged_in'] = username
             return redirect(url_for('index'))
         else:

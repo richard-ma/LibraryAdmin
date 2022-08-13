@@ -17,7 +17,7 @@
             <span>{{ line["image"] }}</span>
             {% if login == True %}
             <span>|</span>
-            <span><a href="{{ url_for('store_update', book_id=book_id, store_id=line['id']) }}">Update</a></span>
+            <span><a href="{{ url_for('store_update', store_id=line['id']) }}">Update</a></span>
             <span>|</span>
             <span><a href="{{ url_for('store_delete', book_id=book_id, store_id=line['id']) }}">Delete</a></span>
             {% endif %}
