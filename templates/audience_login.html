@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block content %}
     <div align="center">
         <form method="post" action="{{ url_for('audience_login') }}">
             <div>
@@ -21,5 +17,4 @@
             </div>
         </form>
     </div>
-</body>
-</html>
+{% endblock %}

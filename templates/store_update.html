@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Update Store</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block content %}
     <div align="center">
         <div>
             <span>Book Name: {{ data['name'] }}</span>
@@ -51,5 +47,4 @@
             </div>
         </form>
     </div>
-</body>
-</html>
+{% endblock %}

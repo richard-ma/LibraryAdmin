@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <div>
+        <span><a href="{{ url_for('index') }}">Home</a></span>
+        <span>|</span>
+        <span><a href="{{ url_for('book_new') }}">Add Book</a></span>
+        <span>|</span>
+        {% if login == True %}
+        <span><a href="{{ url_for('audience_logout') }}">Logout</a></span>
+        {% else %}
+        <span><a href="{{ url_for('audience_login') }}">Login</a></span>
+        {% endif %}
+    </div>
+{% block content %}
+{% endblock %}
+{% block footer %}
+{% endblock %}
+</body>
+</html>
