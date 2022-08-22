@@ -11,6 +11,7 @@ import sqlite3
 import os
 from hashlib import md5
 from datetime import datetime
+from flask_bootstrap import Bootstrap5
 
 PROJECT_ROOT = os.path.dirname(__file__)
 DATABASE = os.path.join(PROJECT_ROOT, "data", "libraryadmin.db")
@@ -37,6 +38,7 @@ def test_login(abortFlg=False):
 
 app = Flask(__name__)
 app.config.from_object(__name__)
+bootstrap = Bootstrap5(app)
 
 
 @app.before_request
