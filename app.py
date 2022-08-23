@@ -13,6 +13,8 @@ from hashlib import md5
 from datetime import datetime
 from flask_bootstrap import Bootstrap5
 
+import admin
+
 PROJECT_ROOT = os.path.dirname(__file__)
 DATABASE = os.path.join(PROJECT_ROOT, "data", "libraryadmin.db")
 SECRET_KEY = "development key"
@@ -38,6 +40,7 @@ def test_login(abortFlg=False):
 
 app = Flask(__name__)
 app.config.from_object(__name__)
+app.register_blueprint(admin.admin)
 bootstrap = Bootstrap5(app)
 
 
