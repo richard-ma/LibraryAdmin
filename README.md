@@ -59,3 +59,6 @@
 * \>\> .import absolut/path/to/LibraryAdmin/data/dev_data/books.csv book `import some book data`
 * \>\> .import absolut/path/to/LibraryAdmin/data/dev_data/audiences.csv andience`import admin id and password`
 * \>\> .quit
+
+## Flask Packages
+* Bootstrap-Flask `Using Bootstrap5 in Flask`
