@@ -1,14 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div align="center">
+    <div class="container">
+        <div class="row row-cols-6">
         {% for line in data %}
-        <div>
-            <span>{{ line["name"] }}</span>
-            <span>{{ line["author"] }}</span>
-            <span>{{ line["publisher"] }}</span>
-            <span>{{ line["isbn"] }}</span>
-            <span>{{ line["image"] }}</span>
+                <div class="col text-end">
+                    <img class="img-thumbnail" src="{{ url_for('static', filename=line['image']) }}" width="100">
+                </div>
+                <div class="col">
+                    <p class="text-nowrap fw-bold">{{ line['name'] }}</p>
+                    <p class="text-nowrap fw-lighter">{{ line['author'] }}</p>
+                    <p class="text-nowrap fw-lighter">{{ line['publisher'] }}</p>
+                    <p>
+                        {% if login == True %}
+                        <button class="btn btn-outline-primary btn-sm">Borrow</button>
+                        {% endif %}
+                    </p>
+                </div>
             {% if login == True %}
             <span>|</span>
             <span><a href="{{ url_for('book_update', book_id=line['id']) }}">Update</a></span>
@@ -19,10 +27,7 @@
             <span>|</span>
             <span><a href="{{ url_for('store_new', book_id=line['id']) }}">Add Store</a></span>
             {% endif %}
-        </div>
-        <div>
-            <span>--------------------------------------------------------------------</span>
-        </div>
         {% endfor %}
+        </div>
     </div>
 {% endblock %}
