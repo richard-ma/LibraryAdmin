@@ -30,6 +30,7 @@
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
+      {% block auth %}
       <ul class="navbar-nav justify-content-end">
         {% if login == True %}
         <li class="nav-item">
@@ -44,6 +45,7 @@
         </li>
         {% endif %}
       </ul>
+      {% endblock %}
     </div>
   </div>
 </nav>
