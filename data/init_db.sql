@@ -15,6 +15,12 @@ CREATE TABLE audience(
     password TEXT
 );
 
+DROP TABLE IF EXISTS admin;
+CREATE TABLE admin(
+    id TEXT PRIMARY KEY,
+    password TEXT
+);
+
 DROP TABLE IF EXISTS store;
 CREATE TABLE store (
     id TEXT PRIMARY KEY,
@@ -30,3 +36,4 @@ CREATE TABLE borrow (
     audience_id TEXT REFERENCES audience(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+INSERT INTO admin VALUES('admin', 'admin');

@@ -12,6 +12,7 @@ import os
 from hashlib import md5
 from datetime import datetime
 from flask_bootstrap import Bootstrap5
+from flask_login import LoginManager
 
 import admin
 
@@ -40,8 +41,14 @@ def test_login(abortFlg=False):
 
 app = Flask(__name__)
 app.config.from_object(__name__)
+# Blueprint
 app.register_blueprint(admin.admin)
+# Bootstrap-Flask
 bootstrap = Bootstrap5(app)
+# Flask-Login
+app.secret_key = SECRET_KEY
+loginManager = LoginManager()
+loginManager.init_app(app)
 
 
 @app.before_request
