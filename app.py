@@ -8,26 +8,13 @@ from flask import session
 from flask import abort
 from flask import flash
 import sqlite3
-import os
 from hashlib import md5
 from datetime import datetime
 from flask_bootstrap import Bootstrap5
 from flask_login import LoginManager
 
+from helper import *
 import admin
-
-PROJECT_ROOT = os.path.dirname(__file__)
-DATABASE = os.path.join(PROJECT_ROOT, "data", "libraryadmin.db")
-SECRET_KEY = "development key"
-DEBUG = True
-
-
-# https://docs.python.org/2/library/sqlite3.html#sqlite3.Connection.row_factory
-def dict_factory(cursor, row):
-    d = {}
-    for idx, col in enumerate(cursor.description):
-        d[col[0]] = row[idx]
-    return d
 
 
 def test_login(abortFlg=False):
@@ -51,6 +38,14 @@ loginManager = LoginManager()
 loginManager.init_app(app)
 
 
+# https://docs.python.org/2/library/sqlite3.html#sqlite3.Connection.row_factory
+def dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
+
+
 @app.before_request
 def connect_db():
     db = getattr(g, 'db', None)
@@ -63,6 +58,19 @@ def connect_db():
 def close_db(exception):
     if hasattr(g, 'db'):
         g.db.close()
+
+
+@loginManager.user_loader
+def load_user(user_id):
+    cur = g.db.execute("select * from admin where id=?", [
+        user_id
+    ])
+    row = cur.fetchone()
+    cur.close()
+    if len(row) > 0:
+        return admin.Admin(user_id)
+    else:
+        return None
 
 
 @app.route("/")
