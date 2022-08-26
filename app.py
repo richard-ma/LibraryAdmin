@@ -68,7 +68,9 @@ def load_user(user_id):
     row = cur.fetchone()
     cur.close()
     if len(row) > 0:
-        return admin.Admin(user_id)
+        user = admin.User()
+        user.id = user_id
+        return user
     else:
         return None
 

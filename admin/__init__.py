@@ -1,6 +1,5 @@
 from flask import Flask
 from flask import render_template
-from flask import g
 from flask import request
 from flask import redirect
 from flask import url_for
@@ -12,26 +11,13 @@ import sqlite3
 from hashlib import md5
 from datetime import datetime
 from flask_bootstrap import Bootstrap5
-from flask_login import LoginForm
+from flask_login import UserMixin
 
 from helper import *
 
 
-class Admin:
-    def __init__(self, user_id):
-        self.id = user_id
-
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        return self.id
+class User(UserMixin):
+    pass
 
 
 admin = Blueprint('admin', __name__, url_prefix='/admin', template_folder='templates')
